@@ -12,6 +12,14 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     public $timestamps = false;
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'userable_id',
+        'userable_type',
+    ];
+
     public function userable()
     {
         return $this->morphTo();
