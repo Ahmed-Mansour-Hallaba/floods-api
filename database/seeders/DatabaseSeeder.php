@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@123',
             'userable_id' => '1',
-            'userable_type' => 'admin',
+            'userable_type' => 'App\\Models\\Admin',
             'password' => Hash::make('123456'),
         ]);
         DB::table('admins')->insert([

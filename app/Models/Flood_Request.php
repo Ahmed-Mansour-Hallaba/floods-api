@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Request extends Model
+class Flood_Request extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    protected $table = 'requests';
     public function requested_by()
     {
         return $this->belongsTo(Civilian::class, 'civilian_id');
