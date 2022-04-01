@@ -42,8 +42,17 @@ class RegisterController extends BaseController
      */
     public function login(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
+            $user->remember_token = $request->token;
             if ($user->userable_type == 'App\\Models\\Admin') {
                 $admin = Admin::find($user->userable_id);
                 $success = AdminResource::make($admin);

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RequestResource;
 use App\Models\Flood;
 use App\Models\Flood_Request;
+use App\Models\User;
+use App\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -64,7 +66,14 @@ class RequestsController extends BaseController
             if ($profile_picture != null) {
                 file_put_contents("img/" . $file_name, $fileBin);
             }
+
+
             $flood_request->save();
+
+            $admins = User::where('userable_type', 'App\\Models\\Civilian');
+            foreach ($admins as $admin) {
+                Notification::notificationCreateRequest($admin->remember_token, $flood_request->id);
+            }
             return $this->sendResponse($flood_request, "Flood request added successfully.");
         }
         return $this->sendError("UnAuthorized acceess", ['User should be civilian']);
@@ -84,6 +93,7 @@ class RequestsController extends BaseController
             $flood_request->is_approved = $request->is_approved;
             $flood_request->approved_by = $user->userable_id;
             $flood_request->save();
+            $civilian_token = $flood_request->requested_by->user->remember_token;
             if ($request->is_approved == 1) {
                 $flood = new Flood();
                 $flood->lat = $flood_request->lat;
@@ -91,6 +101,13 @@ class RequestsController extends BaseController
                 $flood->added_by = $user->userable_id;
                 $flood->is_active = 1;
                 $flood->save();
+                $civilians = User::where('userable_type', 'App\\Models\\Civilian');
+                foreach ($civilians as $civilian) {
+                    Notification::notificationCreateFlood($civilian->remember_token, $flood->id);
+                }
+                Notification::notificationRequestAccepted($civilian_token, $flood_request->id);
+            } else {
+                Notification::notificationRequestRejected($civilian_token, $flood_request->id);
             }
             return $this->sendResponse($flood_request, "Flood request updated successfully.");
         }
