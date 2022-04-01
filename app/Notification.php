@@ -47,7 +47,7 @@ class Notification
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => $encoded_post,
             CURLOPT_HTTPHEADER => array(
-                'Authorization: key=AAAAmHxNIiA:APA91bEdNF3UZVhyJM6PWit8VHOtn10eYLBfDUc2jbeau3_zupssMCmc6_y375zIv1o3tGjmcl0u43I1QKD69ygJgjdtF_j0wapi0rfsd4GWmpXDut313VMQ80ZXNMbBXtR0_NvFVK4x',
+                'Authorization: key=AAAAl-TfL5s:APA91bHZ26s2mEsyfiDwHCEwHUQIClSa3b2gwIKAfHeXaJBpXBcfYAIjcLfnGEfPEbjoFyM537tiIMPJSLoP-xHvjULaCxxQGmIkGyodc0u_cNnJbSeXvr5cDcfYmtijv_L6Av3TnIby',
                 'Content-Type: application/json'
             ),
         ));
