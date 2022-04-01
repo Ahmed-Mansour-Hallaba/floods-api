@@ -32,6 +32,7 @@ class FloodsController extends BaseController
             $flood->lat = $request->lat;
             $flood->lng = $request->lng;
             $flood->added_by = $user->userable_id;
+            $flood->is_active=1;
             $flood->save();
             return $this->sendResponse($flood, "Flood added successfully.");
         }

@@ -68,11 +68,10 @@ class CiviliansController extends BaseController
         if ($profile_picture != null) {
             file_put_contents("img/" . $file_name, $fileBin);
         }
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
-        $success['role'] =  $user->userable_type;
-
-        return $this->sendResponse($success, 'User register successfully.');
+        $civilian = Civilian::find($user->userable_id);
+        $success = CivilianResource::make($civilian);
+        $token =  $user->createToken('MyApp')->plainTextToken;
+        return $this->sendResponse($success, $token);
     }
     public function update(Request $request)
     {
@@ -88,10 +87,10 @@ class CiviliansController extends BaseController
             $user->name = $request->name;
         }
         if ($request->mobile != null) {
-            $user->mobile = $request->mobile;
+            $civilian->mobile = $request->mobile;
         }
         if ($request->NID != null) {
-            $user->NID = $request->NID;
+            $civilian->NID = $request->NID;
         }
         $profile_picture = $request->img;
         $file_name = "";

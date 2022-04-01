@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\RequestResource;
+use App\Models\Flood;
 use App\Models\Flood_Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
-class RequestsController extends Controller
+class RequestsController extends BaseController
 {
     public function gettAllPending(Request $request)
     {
@@ -80,9 +81,17 @@ class RequestsController extends Controller
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $flood_request = Flood_Request::find($request->id);
-            $flood_request->is_approved = $request->is_active;
+            $flood_request->is_approved = $request->is_approved;
             $flood_request->approved_by = $user->userable_id;
             $flood_request->save();
+            if ($request->is_approved == 1) {
+                $flood = new Flood();
+                $flood->lat = $flood_request->lat;
+                $flood->lng = $flood_request->lng;
+                $flood->added_by = $user->userable_id;
+                $flood->is_active = 1;
+                $flood->save();
+            }
             return $this->sendResponse($flood_request, "Flood request updated successfully.");
         }
         return $this->sendError("UnAuthorized acceess", ['User should be admin']);

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Resources\AdminResource;
+use App\Http\Resources\CivilianResource;
+use App\Models\Admin;
+use App\Models\Civilian;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -41,11 +44,15 @@ class RegisterController extends BaseController
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-            $success['name'] =  $user->name;
-            $success['role'] =  $user->userable_type;
-
-            return $this->sendResponse($success, 'User login successfully.');
+            if ($user->userable_type == 'App\\Models\\Admin') {
+                $admin = Admin::find($user->userable_id);
+                $success = AdminResource::make($admin);
+            } else {
+                $civilian = Civilian::find($user->userable_id);
+                $success = CivilianResource::make($civilian);
+            }
+            $token =  $user->createToken('MyApp')->plainTextToken;
+            return $this->sendResponse($success, $token);
         } else {
             return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
