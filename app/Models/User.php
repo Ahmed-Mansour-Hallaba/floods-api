@@ -18,6 +18,7 @@ class User extends Authenticatable
         'password',
         'userable_id',
         'userable_type',
+        'remember_token',
     ];
 
     public function userable()

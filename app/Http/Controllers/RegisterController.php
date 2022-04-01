@@ -53,6 +53,7 @@ class RegisterController extends BaseController
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
             $user->remember_token = $request->token;
+            $user->save();
             if ($user->userable_type == 'App\\Models\\Admin') {
                 $admin = Admin::find($user->userable_id);
                 $success = AdminResource::make($admin);
